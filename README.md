@@ -9,3 +9,13 @@
 + tienphong.vn
 + vietnamnet.vn
 + vnexpress.net
+
+
+## Installation
+
+```
+pip install Scrappy
+pip install beautifulsoup4
+```
+
+
