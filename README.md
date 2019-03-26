@@ -19,3 +19,17 @@ pip install beautifulsoup4
 ```
 
 
+## Run
+
+Crawl all the article links
+
+```
+python vnexpress-link.py
+```
+
+
+Crawl and parse articles:
+
+```
+python vnexpress.py
+```
