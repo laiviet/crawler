@@ -117,7 +117,6 @@ class NewsSpider(scrapy.Spider):
         a.title = title
         a.paragraphs = paragraphs
         a.description = description
-        a.image_url = []
         a.time = time
 
         print('Save: ', filename)

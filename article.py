@@ -11,7 +11,6 @@ class Article(object):
         self.url = ''
         self.title = ''
         self.paragraphs = []
-        self.image_url = []
         self.description = ''
         self.author = ''
         self.time = None
@@ -22,7 +21,6 @@ class Article(object):
                'paragraph': self.paragraphs,
                'description': self.description,
                'author': self.author,
-               'image_url': self.image_url,
                'time': self.time}
         return json.dumps(obj, indent=4, ensure_ascii=False)
 
