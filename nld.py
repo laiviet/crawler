@@ -123,7 +123,7 @@ class NewsSpider(scrapy.Spider):
         with io.open(filename, 'w', encoding='utf8') as f:
             f.write(a.json())
 
-        self.log('Save file %s' % filename, level=logging.DEBUG)
+            self.log('Saved: {}'.format(filename), level=logging.DEBUG)
 
         # append history
         self.crawled_pages.append(response.url)

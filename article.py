@@ -26,6 +26,11 @@ class Article(object):
 
 
 class LinkSpider(scrapy.Spider):
+    """
+    link dictionary:
+        key: category
+        value: set of links
+    """
     links = dict()
 
     @classmethod
@@ -40,16 +45,22 @@ class LinkSpider(scrapy.Spider):
         Returns:
             TYPE: Description
         """
+        assert cls.name, 'Spider has to have a name'
         spider = super(LinkSpider, cls).from_crawler(crawler, *args, **kwargs)
         crawler.signals.connect(spider.spider_closed,
                                 signal=signals.spider_closed)
         return spider
 
     def update_links(self, links, extractor=None):
+        """
+
+        :param links: iteratable of string
+        :param extractor: function that extract category from link
+        :return:
+        """
         if extractor == None:
             extractor = lambda x: x.split('/')[3]
 
-        # print(links)
         for link in links:
             slashes = [1 for x in link if x == '/']
             if sum(slashes) < 4:
@@ -61,8 +72,10 @@ class LinkSpider(scrapy.Spider):
             self.links[category].add(link)
 
     def spider_closed(self):
-        assert self.name, 'Spider has to have a name'
-
+        """
+        close and save links to file
+        :return:
+        """
         for category, links in self.links.items():
             path = '{}/{}.txt'.format(self.name, category)
             with io.open(path, 'a+', encoding='utf-8') as f:

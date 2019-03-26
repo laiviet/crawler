@@ -21,7 +21,7 @@ class NewsSpider(scrapy.Spider):
     Attributes:
         crawled_history (str): Description
         crawled_pages (list): Description
-        link_directory (str): Description
+        name (str): Description
         name (str): Description
     """
 
@@ -55,9 +55,9 @@ class NewsSpider(scrapy.Spider):
         self.load_crawled_pages()
 
         # get all text file in folder Links
-        files = [x for x in os.listdir(self.link_directory) if x.endswith('.txt')]
+        files = [x for x in os.listdir(self.name) if x.endswith('.txt')]
         for file in files:
-            file_name = os.path.join(self.link_directory, file)
+            file_name = os.path.join(self.name, file)
             # self.log(file_name)
             #
             # read all links in each text file
@@ -115,11 +115,10 @@ class NewsSpider(scrapy.Spider):
         a.description = description
         a.time = time
 
-        print('Save: ', filename)
         with io.open(filename, 'w', encoding='utf8') as f:
             f.write(a.json())
 
-        self.log('Save file %s' % filename, level=logging.DEBUG)
+        self.log('Saved: {}'.format(filename), level=logging.DEBUG)
 
         # append history
         self.crawled_pages.append(response.url)
@@ -147,7 +146,7 @@ class NewsSpider(scrapy.Spider):
         with open(self.crawled_history, 'w+') as f:
             for page in self.crawled_pages:
                 f.writelines(page + '\n')
-        self.log('save history %d' % len(self.crawled_pages), level=logging.DEBUG)
+        self.log('save history {}'.format(len(self.crawled_pages)), level=logging.DEBUG)
 
 
 process = CrawlerProcess()

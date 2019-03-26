@@ -31,7 +31,7 @@ class NewsSpider(scrapy.Spider):
     link_directory = "vietnamnet"
     crawled_history = "history/vietnamnet-history.txt"
     crawled_pages = []
-    crawled_ids=[]
+    crawled_ids = []
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -120,7 +120,7 @@ class NewsSpider(scrapy.Spider):
         with io.open(filename, 'w', encoding='utf8') as f:
             f.write(a.json())
 
-        self.log('Save file %s' % filename, level=logging.DEBUG)
+        self.log('Saved: {}'.format(filename), level=logging.DEBUG)
 
         # append history
         id = int(response.url.split('-')[-1].split('.')[0])
@@ -165,7 +165,7 @@ class NewsSpider(scrapy.Spider):
         with open(self.crawled_history, 'w+') as f:
             for page in self.crawled_pages:
                 f.writelines(page + '\n')
-        self.log('save history %d' % len(self.crawled_pages), level=logging.DEBUG)
+        print('Save history', len(self.crawled_pages))
 
 
 parser = argparse.ArgumentParser()
@@ -176,9 +176,3 @@ args = parser.parse_args()
 process = CrawlerProcess()
 process.crawl(NewsSpider, start=args.start, end=args.end)
 process.start()
-
-
-
-
-
-

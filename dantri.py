@@ -12,6 +12,7 @@ from article import Article
 from bs4 import BeautifulSoup
 from scrapy import signals
 from scrapy.crawler import CrawlerProcess
+from os.path import join
 
 
 class NewsSpider(scrapy.Spider):
@@ -67,7 +68,7 @@ class NewsSpider(scrapy.Spider):
             base = os.path.basename(file_name)
             directory = os.path.splitext(base)[0]
             try:
-                os.mkdir('dantri/%s' % directory)
+                os.mkdir(join('dantri', directory))
             except:
                 pass
             for link in links:
@@ -122,7 +123,7 @@ class NewsSpider(scrapy.Spider):
         with io.open(filename, 'w', encoding='utf8') as f:
             f.write(a.json())
 
-        self.log('Save file %s' % filename, level=logging.DEBUG)
+        self.log('Saved: {}'.format(filename), level=logging.DEBUG)
 
         # append history
         self.crawled_pages.append(response.url)
