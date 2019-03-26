@@ -6,6 +6,7 @@
 import scrapy
 import io
 import os
+import time
 import logging
 
 from article import Article
@@ -129,6 +130,11 @@ class NewsSpider(scrapy.Spider):
         # append history
         self.crawled_pages.append(response.url)
 
+    def parse_time(self, str):
+        # sample='Thứ Ba, 26/03/2019, 10:12:16'
+        str = ' '.join(str.split(' ')[-3:])
+        t = time.strptime(str, '%d/%m/%Y | %H:%M')
+        return time.strftime('%d/%m/%y %H:%M', t)
     def spider_closed(self, spider):
         """Summary
 

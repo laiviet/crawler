@@ -23,7 +23,7 @@ class PhapluatLinkSpider(LinkSpider):
         """
         if not os.path.exists(self.name):
             os.mkdir(self.name)
-        self.sub_categories = ['phap-luat/luat-va-doi/']
+        self.sub_categories = ['phap-luat/luat-va-doi']
         pattern = 'http://plo.vn/{}/'
 
         for category in self.sub_categories:

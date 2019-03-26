@@ -4,6 +4,23 @@ from scrapy import signals
 import io
 
 
+def formalize(str):
+    str = str.replace('\n', ' ')
+    str = str.replace('\r', ' ')
+    str = str.replace('\t', ' ')
+    str = str.replace('     ', ' ')
+    str = str.replace('     ', ' ')
+    str = str.replace('     ', ' ')
+    str = str.replace('    ', ' ')
+    str = str.replace('    ', ' ')
+    str = str.replace('    ', ' ')
+    str = str.replace('   ', ' ')
+    str = str.replace('   ', ' ')
+    str = str.replace('  ', ' ')
+    str = str.replace('  ', ' ')
+    return str
+
+
 class Article(object):
 
     def __init__(self):
@@ -14,6 +31,10 @@ class Article(object):
         self.description = ''
         self.author = ''
         self.time = None
+
+    def clean(self):
+        self.paragraphs = [formalize(p) for p in self.paragraphs]
+        self.description = formalize(self.description)
 
     def json(self):
         obj = {'url': self.url,
@@ -81,3 +102,12 @@ class LinkSpider(scrapy.Spider):
             with io.open(path, 'a+', encoding='utf-8') as f:
                 for link in links:
                     f.write(link + '\n')
+
+
+class NewsSpider(scrapy.Spider):
+    custom_settings = {
+        'DOWNLOADER_MIDDLEWARES': {
+            'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+            'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
+        }
+    }

@@ -6,6 +6,7 @@
 import scrapy
 import io
 import os
+import time
 import logging
 
 from article import Article
@@ -25,6 +26,7 @@ class NewsSpider(scrapy.Spider):
     """
 
     name = "laodong"
+    domain = 'laodong.vn'
     crawled_history = "history/{}.txt".format(name)
     crawled_pages = []
 
@@ -83,7 +85,10 @@ class NewsSpider(scrapy.Spider):
         Args:
             response (TYPE): Description
         """
-        container = response.css("section.section-n2")[0]
+        container = response.css("section.section-n2")
+        if len(container) == 0:
+            print('Ignore: ', response.url)
+            return
 
         title = container.css("div.section-title h1").extract_first().strip()
         title = BeautifulSoup(title, "lxml").text.strip()
@@ -117,15 +122,18 @@ class NewsSpider(scrapy.Spider):
         a.paragraphs = paragraphs
         a.description = description
         a.time = time
-
-        print('Save: ', filename)
+        a.clean()
         with io.open(filename, 'w', encoding='utf8') as f:
             f.write(a.json())
-
-            self.log('Saved: {}'.format(filename), level=logging.DEBUG)
+        # self.log('Saved: {}'.format(filename), level=logging.DEBUG)
 
         # append history
         self.crawled_pages.append(response.url)
+
+    def parse_time(self, str):
+        # sample='26/03/2019 | 10:30
+        t = time.strptime(str, '%d/%m/%Y | %H:%M')
+        return time.strftime('%d/%m/%y %H:%M', t)
 
     def spider_closed(self, spider):
         """Summary

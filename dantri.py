@@ -6,9 +6,10 @@
 import scrapy
 import io
 import os
+import time
 import logging
 
-from article import Article
+from article import *
 from bs4 import BeautifulSoup
 from scrapy import signals
 from scrapy.crawler import CrawlerProcess
@@ -25,6 +26,7 @@ class NewsSpider(scrapy.Spider):
     """
 
     name = "dantri"
+    domain = 'dantri.com.vn'
     crawled_history = "history/{}.txt".format(name)
     crawled_pages = []
 
@@ -54,9 +56,9 @@ class NewsSpider(scrapy.Spider):
         self.load_crawled_pages()
 
         # get all text file in folder Links
-        files = [x for x in os.listdir(self.link_directory) if x.endswith('.txt')]
+        files = [x for x in os.listdir(self.name) if x.endswith('.txt')]
         for file in files:
-            file_name = os.path.join(self.link_directory, file)
+            file_name = os.path.join(self.name, file)
             # self.log(file_name)
             #
             # read all links in each text file
@@ -99,8 +101,10 @@ class NewsSpider(scrapy.Spider):
         paragraphs = [BeautifulSoup(p, "lxml").text.strip() for p in paragraphs]
         paragraphs = [x for x in paragraphs if len(x) > 0]
 
-        author = container.css("div#divNewsContent p strong").extract()[-1]
-        author = BeautifulSoup(author, "lxml").html.findAll(text=True, recursive=False)
+        author = container.css("div#divNewsContent p strong").extract()
+        if len(author) == 0:
+            author = container.css("div#divNewsContent p b").extract()
+        author = BeautifulSoup(author[-1], "lxml").text.strip()
 
         page = response.url.split("/")[-1]
         id = page.split('.')[0].split('-')[-1]
@@ -117,7 +121,9 @@ class NewsSpider(scrapy.Spider):
         a.title = title
         a.paragraphs = paragraphs
         a.description = description
-        a.time = time
+        a.time = self.parse_time(time)
+
+        a.clean()
 
         print('Save: ', filename)
         with io.open(filename, 'w', encoding='utf8') as f:
@@ -127,6 +133,11 @@ class NewsSpider(scrapy.Spider):
 
         # append history
         self.crawled_pages.append(response.url)
+
+    def parse_time(self, str):
+        str = ' '.join(str.split(' ')[-3:])
+        t = time.strptime(str, '%d/%m/%Y - %H:%M')
+        return time.strftime('%d/%m/%y %H:%M', t)
 
     def spider_closed(self, spider):
         """Summary
@@ -156,4 +167,6 @@ class NewsSpider(scrapy.Spider):
 
 process = CrawlerProcess()
 process.crawl(NewsSpider)
+logging.getLogger('scrapy').propagate = False
+
 process.start()
