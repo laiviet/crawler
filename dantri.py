@@ -151,7 +151,7 @@ class NewsSpider(scrapy.Spider):
         with open(self.crawled_history, 'w+') as f:
             for page in self.crawled_pages:
                 f.writelines(page + '\n')
-        self.log('save history %d' % len(self.crawled_pages), level=logging.DEBUG)
+        print('Save history',len(self.crawled_pages))
 
 
 process = CrawlerProcess()
