@@ -19,7 +19,6 @@ class VnexpressLinkSpider(LinkSpider):
     """
 
     name = "vnepxress"
-    topic = {}
 
     def start_requests(self):
         """Summary

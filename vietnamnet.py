@@ -27,9 +27,8 @@ class NewsSpider(scrapy.Spider):
         name (str): Description
     """
 
-    name = "news"
-    link_directory = "vietnamnet"
-    crawled_history = "history/vietnamnet-history.txt"
+    name =  "vietnamnet"
+    crawled_history = "history/{}.txt".format(name)
     crawled_pages = []
     crawled_ids = []
 

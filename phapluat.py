@@ -25,7 +25,7 @@ class NewsSpider(scrapy.Spider):
     """
 
     name = "phapluat"
-    crawled_history = "history/phapluat-history.txt"
+    crawled_history = "history/{}.txt".format(name)
     crawled_pages = []
 
     @classmethod
